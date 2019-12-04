@@ -1,0 +1,75 @@
+#######Contrller.cs file.
+public class Controller : MonoBehaviour {
+
+    public float Speed_Con = 300f;
+    public Rigidbody2D rb;
+
+    private bool New_Ob = true;
+    public Transform Empty_GameObject;
+    private float New_GameObject = 0.07f;
+    public LayerMask Ob;
+
+    private bool Old_Ob = false;
+    private Animator ani;
+
+    private bool corr = false;
+    public float Speed_Value = 8f;
+
+
+    void Awake()
+    {
+        ani = GetComponent<Animator>(); 
+    }
+     
+	// Use this for initialization
+	void Start () {
+         rb = GetComponent<Rigidbody2D>();
+  
+
+	}
+
+    void FixedUpdate()
+    {
+        if(corr)
+        {
+            rb.velocity = new Vector2(Speed_Value,rb.velocity.y);
+        }
+
+        ani.SetFloat("Body_Run_Float",rb.velocity.x);
+     
+       New_Ob = Physics2D.OverlapCircle(Empty_GameObject.position, New_GameObject, Ob);
+
+       ani.SetBool("Body_Bool",New_Ob);
+
+         if(New_Ob)
+         {
+             Old_Ob = false;
+         }
+    }
+	
+	// Update is called once per frame
+	void Update () {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(corr)
+            {
+                if (New_Ob || !Old_Ob)
+                {
+                    rb.AddForce(new Vector2(0, Speed_Con));
+                    if (!Old_Ob && !New_Ob)
+                    {
+                        Old_Ob = true;
+                    }
+                }
+            }
+            else
+            {
+                corr = true;
+               // NotificationCenter.DefaultCenter().AddObserver(this,"Body_Game");
+            }
+        }
+
+		
+	}
+}
